@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -24,7 +24,8 @@ def index():
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
-    description = request.form.get("description", "")
+    # description = request.form.get("description", "")
+    description = request.get_json()['description']
     # next use the new desciption to insert to db
     # 1. make it associate to db and add to pending changes 
     todo = Todo(description=description)
@@ -33,4 +34,7 @@ def create_todo():
     db.session.commit()
     # 3. controller show what view to the user after we make commit:
     # redirect to index home route so it shows all newly data 
-    return redirect(url_for("index"))
+    # return redirect(url_for("index"))
+    return jsonify({
+        'description': todo.description
+    })

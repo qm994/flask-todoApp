@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -21,3 +21,16 @@ db.create_all()
 def index():
     return render_template('index.html', data = Todo.query.all()
     )
+
+@app.route('/todos/create', methods=['POST'])
+def create_todo():
+    description = request.form.get("description", "")
+    # next use the new desciption to insert to db
+    # 1. make it associate to db and add to pending changes 
+    todo = Todo(description=description)
+    db.session.add(todo)
+    # 2. commit to db
+    db.session.commit()
+    # 3. controller show what view to the user after we make commit:
+    # redirect to index home route so it shows all newly data 
+    return redirect(url_for("index"))

@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = '''postgresql://qingyuan:MAzhang199711#@127.0.0.1:5432/todoapp'''
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # todo: what models do we need to control application?
 
@@ -15,10 +17,6 @@ class Todo(db.Model):
 
     def __repr__(self):
         return f'<Todo {self.id} {self.description}>'
-
-
-# create all tables
-db.create_all()
 
 
 @app.route('/')

@@ -28,6 +28,7 @@
                 {% endif %} />
             {{ d.description }}
         </li>
+        <button class="button" data-id="{{ d.id }}">&cross;</button>
         {% endfor %}
     </ul>
 
@@ -80,6 +81,32 @@
                     document.getElementById('todos').appendChild(liItem)
                 })
 
+        };
+
+        const buttons = document.querySelectorAll('.button');
+        for (let i = 0; i < buttons.length; i++) {
+            const button = buttons[i];
+            button.onclick = function (e) {
+                e.preventDefault();
+                console.log(e.target.dataset.id)
+                const deleteId = e.target.dataset.id;
+                fetch('/todos/delete-completed', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "id": deleteId
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then((response) => {
+                    document.getElementById('error').className = 'hidden';
+                    console.log(response)
+                })
+                .catch(function () {
+                        document.getElementById('error').className = '';
+                })
+                }
         }
     </script>
 </body>
